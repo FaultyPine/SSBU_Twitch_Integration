@@ -124,10 +124,20 @@ impl Vote {
 use smash_utils::DEFAULT_VEC3;
 use smash::phx::*;
 
-pub static DEFAULT_EFFECT_ON_EFF: &str = "sys_sp_flash";
-pub const DEACTIVATE_EFFECT_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 7.0, y: 18.0, z: 0.0};
+const DEFAULT_EFFECT_ON_EFF: &str = "sys_sp_flash";
+const DEACTIVATE_EFFECT_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 7.0, y: 18.0, z: 0.0};
 
-pub unsafe fn toggle_effect_eff(boma: &mut smash::app::BattleObjectModuleAccessor) -> u32 {
+const EFF_FOLLOW_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 0.0, y: 15.0, z: 0.0};
+
+pub unsafe fn toggle_effect_eff(boma: &mut smash::app::BattleObjectModuleAccessor, enable_or_disable: bool) -> u32 {
+    if enable_or_disable {
+        let handle = smash::app::lua_bind::EffectModule::req_follow(boma, Hash40::new("sys_aura_light"), Hash40::new("top"), &EFF_FOLLOW_OFFSET_FROM_TOP, &DEFAULT_VEC3, 3.0, false, 0, 0, 0, 0, 0, true, true);
+        smash::app::lua_bind::EffectModule::set_rgb(boma, handle as u32, 0.0, 0.1, 1.0);
+    }
+    else {
+        smash::app::lua_bind::EffectModule::kill_kind(boma, Hash40::new("sys_aura_light"), true, true);
+    }
+
     smash::app::lua_bind::EffectModule::req_on_joint(boma, Hash40::new(effects::DEFAULT_EFFECT_ON_EFF), Hash40::new("top"),
         &DEACTIVATE_EFFECT_OFFSET_FROM_TOP, &DEFAULT_VEC3, 1.5, &DEFAULT_VEC3, &DEFAULT_VEC3,
         false, 0, 0, 0) as u32

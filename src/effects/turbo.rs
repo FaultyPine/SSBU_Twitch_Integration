@@ -52,11 +52,11 @@ unsafe fn turbo_mode(boma: &mut app::BattleObjectModuleAccessor) {
 pub unsafe fn turbo_activate(boma: &mut app::BattleObjectModuleAccessor) {
     let eff_size = WorkModule::get_param_float(boma, hash40("shield_radius"), 0) / 7.8;
     EffectModule::req_follow(boma, Hash40::new(TURBO_ACTIVE_EFFECT_STR), Hash40::new("top"), &TURBO_ACTIVATE_EFFECT_OFFSET_FROM_TOP, &DEFAULT_VEC3, eff_size, false, 0, 0, 0, 0, 0, false, false);
-    effects::toggle_effect_eff(boma);
+    effects::toggle_effect_eff(boma, true);
 }
 
 //called once when turbo should be "turned off"
 unsafe fn reset_turbo_mode(boma: &mut app::BattleObjectModuleAccessor) {
-    effects::toggle_effect_eff(boma);
+    effects::toggle_effect_eff(boma, false);
     EffectModule::kill_kind(boma, Hash40::new(TURBO_ACTIVE_EFFECT_STR), false, true);
 }

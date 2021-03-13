@@ -27,7 +27,6 @@ pub static mut PLAYER_EFFECT_NUMBER: Option<usize> = None;
 /* Called multiple times a second with chat_msg/chatter_name being blank if no chat messages were sent since last call, or relevant values if there were. */
 pub unsafe fn update_votes(chat_msg: &String, chatter_name: String) {
     if VOTING_PERIOD_BEGIN != 0 && smash_utils::externs::is_ready_go() {
-        println!("update");
         let config = config::CONFIG.clone().unwrap();
         let chat_msg = chat_msg.to_lowercase().trim().to_string();
         let votes = VOTES.lock().unwrap();

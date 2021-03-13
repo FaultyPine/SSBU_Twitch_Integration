@@ -1,10 +1,6 @@
 #![feature(proc_macro_hygiene)]
 #![allow(non_snake_case)]
-
-#![allow(unused_variables)]
 #![allow(unused_imports)]
-#![allow(unused_assignments)]
-#![allow(dead_code)]
 
 #[macro_use(lazy_static)]
 extern crate lazy_static;

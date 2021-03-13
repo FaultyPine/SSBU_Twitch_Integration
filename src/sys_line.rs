@@ -18,7 +18,6 @@ pub fn sys_line(fighter: &mut smash::lua2cpp::L2CFighterCommon) {
         if app::utility::get_category(boma) == *BATTLE_OBJECT_CATEGORY_FIGHTER 
         && !smash_utils::externs::is_training_mode()
         {
-            let id = smash_utils::gameplay::get_player_number(boma);
 
             if  ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_HI)
             {
@@ -50,7 +49,7 @@ pub fn sys_line(fighter: &mut smash::lua2cpp::L2CFighterCommon) {
 }
 
 
-unsafe fn handle_game_resets(boma: &mut app::BattleObjectModuleAccessor, votes: &mut VoteMap) {
+unsafe fn handle_game_resets(_boma: &mut app::BattleObjectModuleAccessor, votes: &mut VoteMap) {
     static mut LAST_READY_GO: bool = false;
     static mut IS_READY_GO: bool = true;
 

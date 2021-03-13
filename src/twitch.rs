@@ -1,4 +1,4 @@
-use std::net::*;
+use std::{io::BufRead, net::*};
 use std::io::*;
 use crate::{*, utils::*};
 
@@ -7,7 +7,7 @@ const SERVER: &str = "34.217.198.238"; // irc.chat.twitch.tv
 const PORT: u16 = 80;
 // IRC SPEC: https://tools.ietf.org/html/rfc1459 
 
-pub unsafe fn get_chat_msg_info_semiloop(stream: &mut TcpStream, CHANNEL: String) -> Result<()> {
+pub unsafe fn get_chat_msg_info_loop(stream: &mut TcpStream, CHANNEL: String) -> Result<()> {
     let _ = stream.flush();
     let mut chat_msg = String::new();
     let mut chatter_name = String::new();
@@ -20,11 +20,8 @@ pub unsafe fn get_chat_msg_info_semiloop(stream: &mut TcpStream, CHANNEL: String
     According to the IRC spec, messages always end with CR-LF (carrige return, line feed)
     so splitting over newline will seperate it into each chat msg 
     */
-    for line_res in conn.split(b'\n') {
-        if let Ok(x) = line_res {
-
-            /* Turn our vector of u8's into chars and then collect those chars into a string */
-            let chat_info = x.iter().map(|&c| c as char).collect::<String>();
+    for line_res in conn.lines() {
+        if let Ok(chat_info) = line_res {
 
             /* api checks if we're still here every once in a while, sending this notifies them that we're still here */
             if chat_info.starts_with("PING") {
@@ -78,9 +75,11 @@ pub unsafe fn start_twitch_integration() {
         let token = CONFIG.oauth;
         /* Write relevant info to stream to "connect" to the chat */
         let _ = stream.write_all(format!("PASS {}\r\n", token).as_bytes());
-        let _ = stream.write_all(format!("NICK PiNE\r\n").as_bytes());
-        let _ = stream.write_all(format!("JOIN {}\r\n", channel).as_bytes()); //
-        let _ = stream.set_nonblocking(false);
+        let _ = stream.write_all(format!("NICK bruh\r\n").as_bytes());
+        let _ = stream.write_all(format!("JOIN {}\r\n", channel).as_bytes());
+        let _ = stream.set_nonblocking(true);
+        let _ = stream.set_ttl(16666666);
+        let _ = stream.set_read_timeout(Some(std::time::Duration::new(0, 16666666))); // <- one sixty-th of a second (~~1 frame)
 
         println!("[Twitch Integration] Connected to {}'s chat", channel.replace("#", ""));
 
@@ -88,7 +87,7 @@ pub unsafe fn start_twitch_integration() {
         std::thread::spawn(move ||{
             loop {
                 /* Because the buffer in this func continually gets chat info, this func is itself an infinite loop. */
-                if let Err(e) = get_chat_msg_info_semiloop(&mut stream, channel.clone()) {
+                if let Err(e) = get_chat_msg_info_loop(&mut stream, channel.clone()) {
                     println!("[Twitch Integration] Error: {}", e);
                     let _ = stream.flush();
                     let _ = stream.shutdown(std::net::Shutdown::Both);
@@ -99,7 +98,6 @@ pub unsafe fn start_twitch_integration() {
                 }
             }
         });
-
     }
     else {
         println!("[Twitch Integration] Failed to connect to twitch  :(");

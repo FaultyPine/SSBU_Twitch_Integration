@@ -14,18 +14,15 @@ pub unsafe fn death(boma: &mut smash::app::BattleObjectModuleAccessor) {
     if !effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
         StatusModule::change_status_request(boma, *FIGHTER_STATUS_KIND_DEAD, true);
         effect_struct.players[id] = Some(true);
-        println!("here1");
     }
     /* This block will run once-per-frame after the first frame of "death" being "enabled" */
     else if effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
         effect_struct.is_enabled = false;
         voting::init_votes(&mut vote_map);
-        println!("here2");
     }
     /* This block runs when we should "disable" the effect */
     else if effect_struct.players[id].unwrap_or_default() && !effect_struct.is_enabled {
         effect_struct.players[id] = Some(false);
-        println!("here3");
     }
 
 }

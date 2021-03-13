@@ -15,6 +15,7 @@ pub unsafe fn low_grav(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "low_grav" */
     if !effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
+        effects::toggle_effect_eff(boma, true);
         LOW_GRAV_ACTIVATE_TIME = utils::get_remaining_time_as_seconds();
         effect_struct.players[id] = Some(true); // see hooks/get_param.rs
     }
@@ -27,6 +28,7 @@ pub unsafe fn low_grav(boma: &mut smash::app::BattleObjectModuleAccessor) {
     }
     /* This block runs when we should "disable" the effect */
     else if effect_struct.players[id].unwrap_or_default() && !effect_struct.is_enabled {
+        effects::toggle_effect_eff(boma, false);
         effect_struct.players[id] = Some(false);
     }
 }

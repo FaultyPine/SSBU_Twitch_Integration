@@ -16,7 +16,7 @@ static INT_OFFSET: isize = 0x4E19D0; // 11.0.0
 
 #[skyline::hook(offset=INT_OFFSET)]
 pub unsafe fn get_param_int_hook(x0: u64, x1: u64, x2 :u64) -> i32 {
-    let boma = *((x0 as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor;
+    //let boma = *((x0 as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor;
 	//let fighter_kind = get_kind(&mut *boma);
 	//let id = WorkModule::get_int(boma, *FIGHTER_INSTANCE_WORK_ID_INT_ENTRY_ID) as usize;
 
