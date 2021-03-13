@@ -1,5 +1,4 @@
 TODO
-- ChoosePlayer
 - add effects from effects/mod.rs
 - test on my stream
 - give to max to test on his stream
