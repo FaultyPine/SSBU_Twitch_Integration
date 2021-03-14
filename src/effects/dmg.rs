@@ -13,14 +13,14 @@ pub unsafe fn dmg(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "dmg" */
     if !effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
-        let eff_handle = effects::toggle_effect_eff(boma, true);
+        let eff_handle = effects::toggle_effect_eff(boma, false, true);
         if app::sv_math::rand(smash::hash40("fighter"), 2) == 0 {
             EffectModule::set_rgb(boma, eff_handle, 0.0, 1.0, 0.1);
-            DamageModule::heal(boma, DMG_AMNT, 0);
+            DamageModule::heal(boma, -DMG_AMNT, 0);
         }
         else {
             EffectModule::set_rgb(boma, eff_handle, 1.0, 0.1, 0.0);
-            DamageModule::heal(boma, -DMG_AMNT, 0);
+            DamageModule::heal(boma, DMG_AMNT, 0);
         }
         effect_struct.players[id] = Some(true);
     }
@@ -32,6 +32,6 @@ pub unsafe fn dmg(boma: &mut smash::app::BattleObjectModuleAccessor) {
     /* This block runs when we should "disable" the effect */
     else if effect_struct.players[id].unwrap_or_default() && !effect_struct.is_enabled {
         effect_struct.players[id] = Some(false);
-        effects::toggle_effect_eff(boma, false);
+        effects::toggle_effect_eff(boma, false, false);
     }
 }

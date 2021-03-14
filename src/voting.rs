@@ -149,7 +149,7 @@ unsafe fn choose_player_update_votes(chat_msg: &String, chatter_name: String, co
             if let Some(max_vote_effect) = votes.get_mut(VOTING_ROTATION_EFFECTS[0]) {
                 max_vote_effect.is_enabled = true;
                 PLAYER_EFFECT_NUMBER = Some(max_votes_entry.0.parse::<usize>().unwrap()-1);
-                println!("---------\nVote result: Player {}!", max_votes_entry.0);
+                println!("---------\nVote result: {} for Player {}!", VOTING_ROTATION_EFFECTS[0], max_votes_entry.0);
                 randomize_voting_rotation();
                 print_votes(&mut votes, false);
             }

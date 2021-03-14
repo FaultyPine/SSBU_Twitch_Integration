@@ -40,27 +40,27 @@ pub mod dmg;
 pub mod no_hitboxes;
 pub mod no_ledges;
 
-pub unsafe fn once_per_frame(boma: &mut smash::app::BattleObjectModuleAccessor) {
+pub unsafe fn once_per_frame(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
     match config::CONFIG.clone().unwrap().mode {
         GameModes::ChooseEffect => {
-            all_effects(boma);
+            all_effects(boma, fighter);
         }
         GameModes::ChoosePlayer => {
             if voting::PLAYER_EFFECT_NUMBER.is_some() && smash_utils::gameplay::get_player_number(boma) == voting::PLAYER_EFFECT_NUMBER.unwrap() {
-                all_effects(boma);
+                all_effects(boma, fighter);
             }
         }
     }
 
 }
 
-unsafe fn all_effects(boma: &mut smash::app::BattleObjectModuleAccessor) {
+unsafe fn all_effects(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
     turbo::turbo(boma);
     curry::curry(boma);
     death::death(boma);
     sleep::sleep(boma);
     low_grav::low_grav(boma);
-    slow_mo::slow_mo(boma);
+    slow_mo::slow_mo(boma, fighter);
     flight::flight(boma);
     trip::trip(boma);
     final_smash::final_smash(boma);
@@ -107,7 +107,11 @@ pub struct Vote {
      I.E if there is player 1 and player 3 in a match, the array will look like this: 
        [Some(true/false), None, Some(true/false), None, None, None, None, None]
     */
-    pub players: [Option<bool> ; 8]
+    pub players: [Option<bool> ; 8],
+    /*
+    Array to hold times of activation for that effect for each player.
+    */
+    pub activate_times: [u32 ; 8],
 }
 
 impl Vote {
@@ -116,6 +120,7 @@ impl Vote {
             votes: [0;8],
             is_enabled: false,
             players: [None ; 8],
+            activate_times: [0 ; 8],
         }
     }
 }
@@ -129,13 +134,15 @@ const DEACTIVATE_EFFECT_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 7.0, y: 18.0, z
 
 const EFF_FOLLOW_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 0.0, y: 15.0, z: 0.0};
 
-pub unsafe fn toggle_effect_eff(boma: &mut smash::app::BattleObjectModuleAccessor, enable_or_disable: bool) -> u32 {
-    if enable_or_disable {
-        let handle = smash::app::lua_bind::EffectModule::req_follow(boma, Hash40::new("sys_aura_light"), Hash40::new("top"), &EFF_FOLLOW_OFFSET_FROM_TOP, &DEFAULT_VEC3, 3.0, false, 0, 0, 0, 0, 0, true, true);
-        smash::app::lua_bind::EffectModule::set_rgb(boma, handle as u32, 0.0, 0.1, 1.0);
-    }
-    else {
-        smash::app::lua_bind::EffectModule::kill_kind(boma, Hash40::new("sys_aura_light"), true, true);
+pub unsafe fn toggle_effect_eff(boma: &mut smash::app::BattleObjectModuleAccessor, should_eff_follow: bool, enable_or_disable: bool) -> u32 {
+    if should_eff_follow {
+        if enable_or_disable {
+            let handle = smash::app::lua_bind::EffectModule::req_follow(boma, Hash40::new("sys_aura_light"), Hash40::new("top"), &EFF_FOLLOW_OFFSET_FROM_TOP, &DEFAULT_VEC3, 3.0, false, 0, 0, 0, 0, 0, true, true);
+            smash::app::lua_bind::EffectModule::set_rgb(boma, handle as u32, 0.0, 0.1, 1.0);
+        }
+        else {
+            smash::app::lua_bind::EffectModule::kill_kind(boma, Hash40::new("sys_aura_light"), true, true);
+        }
     }
 
     smash::app::lua_bind::EffectModule::req_on_joint(boma, Hash40::new(effects::DEFAULT_EFFECT_ON_EFF), Hash40::new("top"),

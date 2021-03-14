@@ -19,9 +19,12 @@ pub fn sys_line(fighter: &mut smash::lua2cpp::L2CFighterCommon) {
         && !smash_utils::externs::is_training_mode()
         {
 
-            if  ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_HI)
+            static mut EFF_IDX: usize = 0;
+
+            if ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_HI)
+            && voting::PLAYER_EFFECT_NUMBER.is_none()
             {
-                let test_eff = "reverse";
+                let test_eff = effects::EFFECT_NAMES[EFF_IDX];
                 println!("Force effect: {}", test_eff);
                 // effect testing zone
                 for _ in 0..1 {
@@ -37,8 +40,13 @@ pub fn sys_line(fighter: &mut smash::lua2cpp::L2CFighterCommon) {
                 }
 
             }
+            else if ControlModule::check_button_trigger(boma, *CONTROL_PAD_BUTTON_APPEAL_LW)
+            {
+                EFF_IDX = (EFF_IDX + 1) % effects::EFFECT_NAMES.len();
+                println!("Eff: {} : idx {}", effects::EFFECT_NAMES[EFF_IDX], EFF_IDX);
+            }
 
-            effects::once_per_frame(boma);
+            effects::once_per_frame(boma, fighter);
             let mut votes = voting::VOTES.lock().unwrap();
             handle_game_resets(boma, &mut votes);
             if config::CONFIG.clone().unwrap().mode == crate::GameModes::ChoosePlayer {

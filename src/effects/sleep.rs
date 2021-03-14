@@ -3,8 +3,6 @@ use smash::lib::lua_const::*;
 use crate::*;
 
 
-static mut SLEEP_ACTIVATE_TIME: u32 = 0;
-
 const SLEEP_MAX_DURATION_IN_SECS: i32 = 5; // max amount of sleep (seconds)
 
 pub unsafe fn sleep(boma: &mut smash::app::BattleObjectModuleAccessor) {
@@ -21,13 +19,13 @@ pub unsafe fn sleep(boma: &mut smash::app::BattleObjectModuleAccessor) {
         else {
             StatusModule::change_status_request(boma, *FIGHTER_STATUS_KIND_DAMAGE_SLEEP_FALL, true);
         }
-        SLEEP_ACTIVATE_TIME = utils::get_remaining_time_as_seconds();
+        effect_struct.activate_times[id] = utils::get_remaining_time_as_seconds();
         effect_struct.players[id] = Some(true);
     }
     /* This block will run once-per-frame after the first frame of "sleep" being "enabled" */
     else if effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
         let sleep_duration: u32 = (smash::app::sv_math::rand(smash::hash40("fighter"), SLEEP_MAX_DURATION_IN_SECS)+1) as u32;
-        if utils::is_time_range(SLEEP_ACTIVATE_TIME, sleep_duration) || ![*FIGHTER_STATUS_KIND_DAMAGE_SLEEP_START, *FIGHTER_STATUS_KIND_DAMAGE_SLEEP_FALL].contains(&StatusModule::status_kind(boma)) {
+        if utils::is_time_range(effect_struct.activate_times[id], sleep_duration) || ![*FIGHTER_STATUS_KIND_DAMAGE_SLEEP_START, *FIGHTER_STATUS_KIND_DAMAGE_SLEEP_FALL].contains(&StatusModule::status_kind(boma)) {
             effect_struct.is_enabled = false;
             voting::init_votes(&mut vote_map);
         }

@@ -3,8 +3,6 @@ use smash::lib::lua_const::*;
 use crate::*;
 
 
-static mut TRIP_ACTIVATE_TIME: u32 = 0;
-
 
 const TRIP_DURATION_SECS: u32 = 15;
 
@@ -16,8 +14,8 @@ pub unsafe fn trip(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "trip" */
     if !effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
-        effects::toggle_effect_eff(boma, true);
-        TRIP_ACTIVATE_TIME = utils::get_remaining_time_as_seconds();
+        effects::toggle_effect_eff(boma, true, true);
+        effect_struct.activate_times[id] = utils::get_remaining_time_as_seconds();
         effect_struct.players[id] = Some(true);
     }
     /* This block will run once-per-frame after the first frame of "trip" being "enabled" */
@@ -28,14 +26,14 @@ pub unsafe fn trip(boma: &mut smash::app::BattleObjectModuleAccessor) {
             }
         }
 
-        if utils::is_time_range(TRIP_ACTIVATE_TIME, TRIP_DURATION_SECS) {
+        if utils::is_time_range(effect_struct.activate_times[id], TRIP_DURATION_SECS) {
             effect_struct.is_enabled = false;
             voting::init_votes(&mut vote_map);
         }
     }
     /* This block runs when we should "disable" the effect */
     else if effect_struct.players[id].unwrap_or_default() && !effect_struct.is_enabled {
-        effects::toggle_effect_eff(boma, false);
+        effects::toggle_effect_eff(boma, true, false);
         effect_struct.players[id] = Some(false);
     }
 }

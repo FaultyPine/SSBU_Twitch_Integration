@@ -16,6 +16,7 @@ skyline_smash = { git = "https://github.com/ultimate-research/skyline-smash.git"
 acmd = { git = "https://github.com/ultimate-research/skyline-acmd.git" }
 smash_utils = { git = "https://github.com/FaultyPine/smash_utils.git" }
 skyline-web = { git = "https://github.com/skyline-rs/skyline-web.git" }
+smash_script = { git = "https://github.com/blu-dev/smash-script.git" }
 lazy_static = "1.4.0"
 serde = { version = "1", features = ["derive"] }
 toml = "0.5.8"

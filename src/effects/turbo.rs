@@ -7,8 +7,6 @@ use smash_utils::DEFAULT_VEC3;
 
 pub const TURBO_ACTIVE_EFFECT_STR: &str = "sys_revenge_aura";
 pub const TURBO_ACTIVATE_EFFECT_OFFSET_FROM_TOP: Vector3f = Vector3f {x: 0.0, y: 7.0, z: 0.0};
-
-static mut TURBO_ACTIVATE_TIME: u32 = 0;
 const TURBO_DURATION: u32 = 20;
 
 pub unsafe fn turbo(boma: &mut smash::app::BattleObjectModuleAccessor) {
@@ -19,7 +17,7 @@ pub unsafe fn turbo(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "turbo" */
     if !effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
-        TURBO_ACTIVATE_TIME = utils::get_remaining_time_as_seconds();
+        effect_struct.activate_times[id] = utils::get_remaining_time_as_seconds();
         turbo_activate(boma);
         effect_struct.players[id] = Some(true);
     }
@@ -27,8 +25,7 @@ pub unsafe fn turbo(boma: &mut smash::app::BattleObjectModuleAccessor) {
     else if effect_struct.players[id].unwrap_or_default() && effect_struct.is_enabled {
         turbo_mode(boma);
         /* Once TURBO_DURATION seconds have elapsed since turbo was activated, disable it */
-        if utils::is_time_range(TURBO_ACTIVATE_TIME, TURBO_DURATION) {
-            TURBO_ACTIVATE_TIME = 0;
+        if utils::is_time_range(effect_struct.activate_times[id], TURBO_DURATION) {
             effect_struct.is_enabled = false;
             voting::init_votes(&mut vote_map);
         }
@@ -52,11 +49,11 @@ unsafe fn turbo_mode(boma: &mut app::BattleObjectModuleAccessor) {
 pub unsafe fn turbo_activate(boma: &mut app::BattleObjectModuleAccessor) {
     let eff_size = WorkModule::get_param_float(boma, hash40("shield_radius"), 0) / 7.8;
     EffectModule::req_follow(boma, Hash40::new(TURBO_ACTIVE_EFFECT_STR), Hash40::new("top"), &TURBO_ACTIVATE_EFFECT_OFFSET_FROM_TOP, &DEFAULT_VEC3, eff_size, false, 0, 0, 0, 0, 0, false, false);
-    effects::toggle_effect_eff(boma, true);
+    effects::toggle_effect_eff(boma, false, true);
 }
 
 //called once when turbo should be "turned off"
 unsafe fn reset_turbo_mode(boma: &mut app::BattleObjectModuleAccessor) {
-    effects::toggle_effect_eff(boma, false);
+    effects::toggle_effect_eff(boma, false, false);
     EffectModule::kill_kind(boma, Hash40::new(TURBO_ACTIVE_EFFECT_STR), false, true);
 }
