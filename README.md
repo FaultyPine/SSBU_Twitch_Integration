@@ -3,7 +3,7 @@ TODO
 - test on my stream
 - give to max to test on his stream
 - contact other smash youtubers/streamers to show it off
-- release! 
+- release on gamebanana and twitter and stuff 
 
 
 
