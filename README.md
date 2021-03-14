@@ -23,7 +23,7 @@ Navigate to the config file located at "sd:/Twitch_Integration_Config.toml".
 In this config file you can set the channel to pull chat messages from, the "gamemode", the time between each "voting interval", and most importantly,
 your oauth token. You need an oauth token for the mod to function properly. Luckily, getting one is super easy.
   
-### Oauth Token
+#### Oauth Token
 
 Visit this site:
 https://twitchapps.com/tmi/
@@ -31,7 +31,7 @@ Click connect, and after connecting your twitch account, it will give you your o
 Paste the entire string it gives you into the oauth field in the config file.
   
     
-### Gamemodes
+#### Gamemodes
 
 Currently, there are two gamemodes to choose from.
 "ChooseEffect", and "ChoosePlayer".
@@ -44,7 +44,7 @@ ChoosePlayer:
 During each voting period, a random effect will be chosen, the chat will then vote for which player should get the randomized effect.
 In the case of a draw, a random option out of the highest-voted options will be chosen.
 
-### Voting Interval
+#### Voting Interval
   
 The amount of time (in seconds) that passes in between each voting period. (Must be a positive integer)
   
