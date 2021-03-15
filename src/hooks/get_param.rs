@@ -26,7 +26,7 @@ pub unsafe fn get_param_int_hook(x0: u64, x1: u64, x2 :u64) -> i32 {
 }
 
 #[skyline::hook(offset=INT_OFFSET+0x40)]
-pub unsafe fn get_param_float_hook(x0: u64, x1: u64, x2 :u64) -> f32 {
+pub unsafe fn get_param_float_hook(x0: u64, x1: u64, x2: u64) -> f32 {
     let boma = &mut *(*((x0 as *mut u64).offset(1)) as *mut BattleObjectModuleAccessor);
     //let fighter_kind = get_kind(&mut *boma);
 	let id = smash_utils::gameplay::get_player_number(boma);
@@ -36,13 +36,23 @@ pub unsafe fn get_param_float_hook(x0: u64, x1: u64, x2 :u64) -> f32 {
     if votes.is_err() { return ret; }
     let mut votes = votes.unwrap();
 
-    if x2 == 0 && x1 == hash40("air_accel_y") {
-        if votes.contains_key("low-grav") && votes.get_mut("low-grav").unwrap().players[id].unwrap_or_default() {
-            return ret/2.0;
+    if x2 == 0 {
+
+        if x1 == hash40("air_accel_y") {
+            if votes.contains_key(effects::LOWGRAV) && votes.get_mut(effects::LOWGRAV).unwrap().players[id].unwrap_or_default() {
+                return ret / 2.0;
+            }
+            else if votes.contains_key(effects::FLIGHT) && votes.get_mut(effects::FLIGHT).unwrap().players[id].unwrap_or_default() {
+                return ret / 2.3;
+            }
         }
-        else if votes.contains_key("flight") && votes.get_mut("flight").unwrap().players[id].unwrap_or_default() {
-            return ret/2.3;
+
+        else if x1 == hash40("ground_brake") {
+            if votes.contains_key(effects::LWFRICTION) && votes.get_mut(effects::LWFRICTION).unwrap().players[id].unwrap_or_default() {
+                return ret / 2.0;
+            }
         }
+
     }
 
     ret

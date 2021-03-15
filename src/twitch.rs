@@ -91,7 +91,7 @@ pub unsafe fn start_twitch_integration() {
                     println!("[Twitch Integration] Error: {}", e);
                     let _ = stream.flush();
                     let _ = stream.shutdown(std::net::Shutdown::Both);
-                    if skyline_web::Dialog::yes_no("Failed to connect to twitch chat! Would you like to try reconnecting?") {
+                    if skyline_web::Dialog::yes_no("Twitch Integration plugin failed to connect to twitch! Would you like to try reconnecting?") {
                         start_twitch_integration();
                     }
                     break;
@@ -101,7 +101,7 @@ pub unsafe fn start_twitch_integration() {
     }
     else {
         println!("[Twitch Integration] Failed to connect to twitch  :(");
-        if skyline_web::Dialog::yes_no("Failed to connect to twitch chat! Would you like to try reconnecting?") {
+        if skyline_web::Dialog::yes_no("Twitch Integration plugin failed to connect to twitch! Would you like to try reconnecting?") {
             start_twitch_integration();
         }
     }

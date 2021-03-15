@@ -10,7 +10,7 @@ const FLIGHT_DURATION_TIME: u32 = 15;
 pub unsafe fn flight(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("flight");
+    let effect_struct = vote_map.get_mut(effects::FLIGHT);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "flight" */

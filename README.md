@@ -1,5 +1,6 @@
 TODO
 - add effects from effects/mod.rs
+- fix pythra/icies/characters with subfighters
 - test on my stream
 - give to max to test on his stream
 - contact other smash youtubers/streamers to show it off

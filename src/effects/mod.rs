@@ -8,13 +8,9 @@ TODO:
  - chaos (multiple effects at random)
  - poison/flower
  - crit hits at random
- - low friction
  - wind
  - randomly scale up/down
  - metal effect + controller off for random amnt of time
-
-Instead of picking random effect and applying to all chars,
-Pick effect at random and allow audience to select which player it goes to
 
 */
 
@@ -37,22 +33,8 @@ pub mod final_smash;
 pub mod reverse_dir;
 pub mod double_jumps;
 pub mod dmg;
-pub mod no_hitboxes;
 pub mod no_ledges;
-
-pub unsafe fn once_per_frame(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
-    match config::CONFIG.clone().unwrap().mode {
-        GameModes::ChooseEffect => {
-            all_effects(boma, fighter);
-        }
-        GameModes::ChoosePlayer => {
-            if voting::PLAYER_EFFECT_NUMBER.is_some() && smash_utils::gameplay::get_player_number(boma) == voting::PLAYER_EFFECT_NUMBER.unwrap() {
-                all_effects(boma, fighter);
-            }
-        }
-    }
-
-}
+pub mod friction;
 
 unsafe fn all_effects(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
     turbo::turbo(boma);
@@ -67,27 +49,56 @@ unsafe fn all_effects(boma: &mut smash::app::BattleObjectModuleAccessor, fighter
     reverse_dir::reverse_dir(boma);
     double_jumps::double_jumps(boma);
     dmg::dmg(boma);
-    //no_hitboxes::no_hitboxes(boma);
     no_ledges::no_ledges(boma);
+    friction::lw_friction(boma);
 }
 
+pub const TURBO: &'static str = "turbo";
+pub const CURRY: &'static str = "curry";
+pub const DEATH: &'static str = "death";
+pub const SLEEP: &'static str = "sleep";
+pub const LOWGRAV: &'static str = "low-grav";
+pub const SLOWMO: &'static str = "slow-mo";
+pub const FLIGHT: &'static str = "flight";
+pub const TRIP: &'static str = "trip";
+pub const FINALSMASH: &'static str = "final-smash";
+pub const REVERSE: &'static str = "reverse";
+pub const JUMPS: &'static str = "jumps";
+pub const DMG: &'static str = "dmg-or-heal";
+pub const NOLEDGES: &'static str = "no-ledges";
+pub const LWFRICTION: &'static str = "lw-friction";
 
 pub const EFFECT_NAMES: &[&str] = &[
-    "turbo",
-    "curry",
-    "death",
-    "sleep",
-    "low-grav",
-    "slow-mo",
-    "flight",
-    "trip",
-    "final-smash",
-    "reverse",
-    "jumps",
-    "dmg-or-heal",
-    //"no-hitboxes",
-    "no-ledges",
+    TURBO,
+    CURRY,
+    DEATH,
+    SLEEP,
+    LOWGRAV,
+    SLOWMO,
+    FLIGHT,
+    TRIP,
+    FINALSMASH,
+    REVERSE,
+    JUMPS,
+    DMG,
+    NOLEDGES,
+    LWFRICTION,
 ];
+
+
+pub unsafe fn once_per_frame(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
+    match config::CONFIG.clone().unwrap().mode {
+        GameModes::ChooseEffect => {
+            all_effects(boma, fighter);
+        }
+        GameModes::ChoosePlayer => {
+            if voting::PLAYER_EFFECT_NUMBER.is_some() && smash_utils::gameplay::get_player_number(boma) == voting::PLAYER_EFFECT_NUMBER.unwrap() {
+                all_effects(boma, fighter);
+            }
+        }
+    }
+
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vote { 

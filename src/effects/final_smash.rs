@@ -8,7 +8,7 @@ use crate::*;
 pub unsafe fn final_smash(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("final-smash");
+    let effect_struct = vote_map.get_mut(effects::FINALSMASH);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "final_smash" */

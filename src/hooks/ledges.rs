@@ -18,7 +18,7 @@ unsafe fn can_entry_cliff_hook(boma: &mut app::BattleObjectModuleAccessor) -> u6
     if votes.is_err() { return ret; }
     let mut votes = votes.unwrap();
 
-    if votes.contains_key("no-ledges") && votes.get_mut("no-ledges").unwrap().players[id].unwrap_or_default() {
+    if votes.contains_key(effects::NOLEDGES) && votes.get_mut(effects::NOLEDGES).unwrap().players[id].unwrap_or_default() {
         return 0;
     }
     

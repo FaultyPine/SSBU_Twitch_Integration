@@ -8,7 +8,7 @@ const SLEEP_MAX_DURATION_IN_SECS: i32 = 5; // max amount of sleep (seconds)
 pub unsafe fn sleep(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("sleep");
+    let effect_struct = vote_map.get_mut(effects::SLEEP);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "sleep" */

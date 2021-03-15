@@ -8,7 +8,7 @@ const DMG_AMNT: f32 = 15.0; // amount to either heal or damage
 pub unsafe fn dmg(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("dmg-or-heal");
+    let effect_struct = vote_map.get_mut(effects::DMG);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "dmg" */

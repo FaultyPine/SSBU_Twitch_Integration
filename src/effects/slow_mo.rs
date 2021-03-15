@@ -8,7 +8,7 @@ const SLOWMO_DURATION_SECS: u32 = 15;
 pub unsafe fn slow_mo(boma: &mut smash::app::BattleObjectModuleAccessor, fighter: &mut smash::lua2cpp::L2CFighterCommon) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("slow-mo");
+    let effect_struct = vote_map.get_mut(effects::SLOWMO);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "slow_mo" */

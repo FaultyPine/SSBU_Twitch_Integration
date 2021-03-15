@@ -7,7 +7,7 @@ const NO_LEDGES_DURATION: u32 = 15;
 pub unsafe fn no_ledges(boma: &mut smash::app::BattleObjectModuleAccessor) {
     let id = smash_utils::gameplay::get_player_number(boma);
     let mut vote_map = voting::VOTES.lock().unwrap();
-    let effect_struct = vote_map.get_mut("no-ledges");
+    let effect_struct = vote_map.get_mut(effects::NOLEDGES);
     if effect_struct.is_none() { return; }
     let effect_struct = effect_struct.unwrap();
     /* This block runs when we first enable "no_ledges" */
