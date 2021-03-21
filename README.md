@@ -1,8 +1,7 @@
 TODO
 - add effects from effects/mod.rs
 - fix pythra/icies/characters with subfighters
-- test on my stream
-- give to max to test on his stream
+- fix timing system to work with matches that aren't timed
 - contact other smash youtubers/streamers to show it off
 - release on gamebanana and twitter and stuff 
 
