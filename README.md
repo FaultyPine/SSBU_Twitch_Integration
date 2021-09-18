@@ -6,6 +6,7 @@ TODO
 - release on gamebanana and twitter and stuff 
 
 
+![ssbu twitch integration](https://user-images.githubusercontent.com/53064235/133893701-f8249b08-0145-43f2-b69f-e9ea79b3ed30.png)
 
 # SSBU Twitch Integration
   
